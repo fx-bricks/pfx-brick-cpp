@@ -1,6 +1,12 @@
 PFx Brick C++ API
 =================
 
+.. image:: https://img.shields.io/badge/status-in%20development-orange.svg
+
+.. image:: https://img.shields.io/badge/license-MIT-blue.svg 
+    :target: https://github.com/fx-bricks/pfx-brick-py/blob/master/LICENSE.md
+
+
 This repository contains the API for developing C++ applications which communicate with the PFx Brick.
 
 Getting Started
