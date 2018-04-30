@@ -29,5 +29,8 @@ std::string bytes_to_str(int numBytes, unsigned char *bytes);
 std::string wchar_to_str(const wchar_t *s);
 void str_to_wchar(const std::string& str, wchar_t *ws);                      
 bool is_in_list(std::string& s, std::vector<std::string>& slist);
+int ch_to_mask(std::string& s);
+int duration_to_fixed_value(double duration);
+std::string mask_to_ch(int mask);
 
 #endif

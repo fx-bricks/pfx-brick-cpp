@@ -175,7 +175,7 @@ std::string command_str(int key)
 
 std::string motor_action_str(int key)
 { std::string s;
-  switch (key)
+  switch (key & EVT_MOTOR_ACTION_ID_MASK)
   {
     case EVT_MOTOR_ESTOP: s = "Emergency Stop"; break;
     case EVT_MOTOR_STOP: s = "Stop"; break;
@@ -334,4 +334,56 @@ void str_to_wchar(const std::string& str, wchar_t *ws)
   const wchar_t* wcstr = widestr.c_str();
   int len = widestr.length();
   for (int i=0; i<len; i++) *ws++ = *wcstr++;
+}
+
+
+int ch_to_mask(std::string& s)
+{ int mask = 0;
+  int len = s.length();
+  for (int i=0; i<len; i++)
+  { std::string cs = s.substr(i, 1);
+    if      ((cs == "1") || (cs == "A") || (cs == "a")) mask |= 0x01;
+    else if ((cs == "2") || (cs == "B") || (cs == "b")) mask |= 0x02;
+    else if ((cs == "3") || (cs == "C") || (cs == "c")) mask |= 0x04;
+    else if ((cs == "4") || (cs == "D") || (cs == "d")) mask |= 0x08;
+    else if (cs == "5") mask |= 0x10;
+    else if (cs == "6") mask |= 0x20;
+    else if (cs == "7") mask |= 0x40;
+    else if (cs == "8") mask |= 0x80;
+  }
+  return mask;
+}
+
+std::string mask_to_ch(int mask)
+{
+  std::string s;
+  if (mask & 0x01) s.append("1 ");
+  if (mask & 0x02) s.append("2 ");
+  if (mask & 0x04) s.append("3 ");
+  if (mask & 0x08) s.append("4 ");
+  if (mask & 0x10) s.append("5 ");
+  if (mask & 0x20) s.append("6 ");
+  if (mask & 0x40) s.append("7 ");
+  if (mask & 0x80) s.append("8 ");
+  return s;
+}
+
+int duration_to_fixed_value(double duration)
+{
+  if (duration < 1.0) return EVT_SOUND_DUR_500MS;
+  else if (duration < 1.5)  return EVT_SOUND_DUR_1S;
+  else if (duration < 2.0)  return EVT_SOUND_DUR_1_5S;
+  else if (duration < 3.0)  return EVT_SOUND_DUR_2S;
+  else if (duration < 4.0)  return EVT_SOUND_DUR_3S;
+  else if (duration < 5.0)  return EVT_SOUND_DUR_4S;
+  else if (duration < 10.0) return EVT_SOUND_DUR_5S;
+  else if (duration < 15.0) return EVT_SOUND_DUR_10S;
+  else if (duration < 20.0) return EVT_SOUND_DUR_15S;
+  else if (duration < 30.0) return EVT_SOUND_DUR_20S;
+  else if (duration < 45.0) return EVT_SOUND_DUR_30S;
+  else if (duration < 60.0) return EVT_SOUND_DUR_45S;
+  else if (duration < 90.0) return EVT_SOUND_DUR_60S;
+  else if (duration < 120.0) return EVT_SOUND_DUR_90S;
+  else if (duration < 300.0) return EVT_SOUND_DUR_2M;
+  return EVT_SOUND_DUR_5M;
 }

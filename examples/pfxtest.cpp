@@ -20,6 +20,10 @@ int main (int argc, char *argv[])
     brick.print_status();
     brick.get_config();
     brick.print_config();
+    
+    // PFxAction a = PFxAction().set_motor_speed("1", 50.0);
+    // a.Print();
+    
     printf("Closing...\n");
     brick.close();
   }

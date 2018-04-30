@@ -29,7 +29,7 @@ CFLAGS = -Wall -O2 -DOS_$(OS) -I$(INCDIR)
 LIBS = -lhid -lsetupapi
 endif
 
-OBJS = $(PROG).o $(INCDIR)hid.o $(INCDIR)pfxbrick.o $(INCDIR)pfxconfig.o $(INCDIR)pfxhelpers.o $(INCDIR)pfxmsg.o
+OBJS = $(PROG).o $(INCDIR)hid.o $(INCDIR)pfxbrick.o $(INCDIR)pfxconfig.o $(INCDIR)pfxhelpers.o $(INCDIR)pfxmsg.o $(INCDIR)pfxaction.o
 
 all: $(TARGET)
 
@@ -50,6 +50,9 @@ pfxhelpers.o: $(INCDIR)pfxhelpers.cpp $(INCDIR)pfxbrick.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 pfxmsg.o: $(INCDIR)pfxmsg.cpp $(INCDIR)pfxbrick.h
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+pfxaction.o: $(INCDIR)pfxaction.cpp $(INCDIR)pfxbrick.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 hid.o: $(INCDIR)hid.c $(INCDIR)hidapi.h
