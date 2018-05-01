@@ -41,7 +41,7 @@ public:
   unsigned int numFiles;
   unsigned long bytesUsed;
   unsigned long bytesLeft;
-  PFxFile files[PFX_AUDIO_FILES_MAX];  
+  PFxFile *files;  
 };
 
 #endif

@@ -17,7 +17,7 @@ else ifeq ($(OS), MACOSX)
 TARGET = $(PROG)
 SDK = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
 ARCH = -mmacosx-version-min=10.13 -arch x86_64
-CC = gcc
+CC = clang
 STRIP = strip
 CFLAGS = -Wall -O2 -DOS_$(OS) -isysroot $(SDK) $(ARCH) -I$(INCDIR) -v
 LIBS = $(ARCH) -Wl,-syslibroot,$(SDK) -framework IOKit -framework CoreFoundation -lc++

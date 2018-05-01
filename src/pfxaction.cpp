@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <vector>
 
 #include "pfxbrick.h"
 
@@ -92,6 +93,112 @@ PFxAction& PFxAction::set_motor_speed(std::string ch, int speed, double duration
   else m |= EVT_MOTOR_SET_SPD;
   motorActionId = m;
   return *this;
+}
+ 
+PFxAction& PFxAction::stop_motor(std::string ch)
+{
+  int m = ch_to_mask(ch) & EVT_MOTOR_OUTPUT_MASK;
+  m |= EVT_MOTOR_ESTOP;
+  motorActionId = m;
+  return *this;
+}
+
+PFxAction& PFxAction::light_on(std::string ch)
+{
+  lightOutputMask = ch_to_mask(ch);
+  lightFxId = EVT_LIGHTFX_ON_OFF_TOGGLE;
+  lightParam4 = EVT_TRANSITION_ON;
+  return *this;
+}
+  
+PFxAction& PFxAction::light_off(std::string ch)
+{
+  lightOutputMask = ch_to_mask(ch);
+  lightFxId = EVT_LIGHTFX_ON_OFF_TOGGLE;
+  lightParam4 = EVT_TRANSITION_OFF;
+  return *this;
+}
+
+PFxAction& PFxAction::light_toggle(std::string ch)
+{
+  lightOutputMask = ch_to_mask(ch);
+  lightFxId = EVT_LIGHTFX_ON_OFF_TOGGLE;
+  lightParam4 = EVT_TRANSITION_TOGGLE;
+  return *this;
+}
+  
+PFxAction& PFxAction::set_brightness(std::string ch, int brightness)
+{
+  int x = brightness;
+  if (x > 255) x = 255;
+  if (x < 0) x = 0;
+  lightOutputMask = ch_to_mask(ch);
+  lightFxId = EVT_LIGHTFX_SET_BRIGHT;
+  lightParam1 = x;  
+  return *this;
+}
+  
+PFxAction& PFxAction::combo_light_fx(int fx, std::vector<int> param)
+{
+  return light_fx("", fx | EVT_LIGHT_COMBO_MASK, param);
+}
+  
+PFxAction& PFxAction::light_fx(std::string ch, int fx, std::vector<int> param)
+{
+  lightOutputMask = ch_to_mask(ch);
+  lightFxId = fx;
+  for (int i=0; i<param.size(); i++)
+  { switch (i)
+    { case 0 : lightParam1 = param[0]; break;
+      case 1 : lightParam2 = param[1]; break;
+      case 2 : lightParam3 = param[2]; break;
+      case 3 : lightParam4 = param[3]; break;
+      case 4 : lightParam5 = param[4]; break;
+    }
+  }
+  return *this;
+}
+  
+PFxAction& PFxAction::sound_fx(int fx, std::vector<int> param, int fileID)
+{
+  soundFxId = fx;
+  if ((fileID >= 0) && (fileID < 0xFF)) soundFileId = fileID;
+  for (int i=0; i<param.size(); i++)
+  { switch (i)
+    { case 0 : soundParam1 = param[0]; break;
+      case 1 : soundParam2 = param[1]; break;
+    }
+  }
+  return *this;  
+}
+  
+PFxAction& PFxAction::play_audio_file(int fileID)
+{ std::vector<int> p(2);
+  p[0] = EVT_SOUND_TOGGLE;
+  p[1] = 0;
+  return sound_fx(EVT_SOUND_PLAY_ONCE, p, fileID);
+}
+  
+PFxAction& PFxAction::stop_audio_file(int fileID)
+{ std::vector<int> p;
+  return sound_fx(EVT_SOUND_STOP, p, fileID);
+}
+  
+PFxAction& PFxAction::repeat_audio_file(int fileID)
+{ std::vector<int> p;
+  return sound_fx(EVT_SOUND_PLAY_CONT, p, fileID);
+}
+  
+PFxAction& PFxAction::set_volume(int volume)
+{ std::vector<int> p;
+  double vf = (double)volume;
+  if (vf > 100.0) vf = 100.0;
+  if (vf < 0.0) vf = 0.0;
+  vf = (vf / 100.0) * 255.0;
+  int v = (int)vf;
+  p[0] = 0;
+  p[1] = v;
+  return sound_fx(EVT_SOUND_SET_VOL, p, -1);
 }
   
 void PFxAction::Print()
