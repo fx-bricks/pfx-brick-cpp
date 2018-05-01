@@ -100,7 +100,6 @@ PFxBrick& PFxBrick::operator=(const PFxBrick& withBrick)
   return *this;
 }
 
-
 bool PFxBrick::open(std::string ser_no)
 {
   if (!is_open)
@@ -217,6 +216,7 @@ void PFxBrick::get_config()
   int res = cmd_get_config(dev);
   if (res) config.from_bytes(&dev.rx[0]);
 }
+
 
 void PFxBrick::print_config()
 {
