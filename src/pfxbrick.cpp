@@ -214,23 +214,20 @@ void PFxBrick::print_config()
 }
 
 void PFxBrick::refresh_file_dir()
-{
+{ if (!is_open) return;
   int res = 0;
   res = cmd_get_free_space(dev);
   if (res)
-  {
-    filedir.bytesLeft = bytes_to_uint32(&dev.rx[3]);
+  { filedir.bytesLeft = bytes_to_uint32(&dev.rx[3]);
     unsigned long capacity = bytes_to_uint32(&dev.rx[7]);
     filedir.bytesUsed = capacity - filedir.bytesLeft;
   }
   res = cmd_get_num_files(dev);
   if (res)
-  {
-    filedir.Clear();
+  { filedir.Clear();
     int file_count = bytes_to_uint16(&dev.rx[3]);
     for (int i=0; i<file_count; i++)
-    { 
-      res = cmd_get_dir_entry(dev, i+1);
+    { res = cmd_get_dir_entry(dev, i+1);
       PFxFile d = PFxFile();
       d.from_bytes(&dev.rx[0]);
       filedir.InsertAtEnd(d);

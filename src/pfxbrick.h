@@ -181,7 +181,7 @@ public:
     @param address event/action LUT address (0 - 0x7F)
     @param action PFxAction action data structure class
   */
-  void set_action_by_address(int address, PFxAction& action);
+  void set_action_by_address(int address, const PFxAction& action);
 
   /**
     @brief Sets a new action in the event/action LUT by event ID
@@ -198,7 +198,7 @@ public:
     @param ch channel index LUT address component (0 - 3)
     @param action PFxAction action data structure class
   */
-  void set_action(int evtID, int ch, PFxAction& action);
+  void set_action(int evtID, int ch, const PFxAction& action);
 
   /**
     @brief Executes a passed action data structure
@@ -209,7 +209,7 @@ public:
     
     @param action PFxAction action data structure class
   */
-  void test_action(PFxAction& action);
+  void test_action(const PFxAction& action);
   
   /**
     @brief Reads the PFx Brick file system directory

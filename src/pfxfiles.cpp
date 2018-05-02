@@ -151,7 +151,7 @@ void PFxDir::Resize (int newLength)
   numFiles = newLength;
 }
 
-void PFxDir::InsertBefore  (PFxFile withFile, int atIdx)
+void PFxDir::InsertBefore(const PFxFile& withFile, int atIdx)
 { int i;
   
   if (atIdx < 0) return;
@@ -168,7 +168,7 @@ void PFxDir::InsertBefore  (PFxFile withFile, int atIdx)
   numFiles += 1;
 }
 
-void PFxDir::Remove (int atIdx)
+void PFxDir::Remove(int atIdx)
 { int i;
   
   if (atIdx < 0) return;
@@ -274,7 +274,7 @@ void fs_copy_file_to(PFxDev& dev, int fid, std::string fn, bool show_progress)
   }
 }
 
-void fs_copy_file_from(PFxDev& dev, PFxFile& file, std::string fn, bool show_progress)
+void fs_copy_file_from(PFxDev& dev, const PFxFile& file, std::string fn, bool show_progress)
 { int res = 0;
   dev.tx[0] = PFX_CMD_FILE_OPEN;
   dev.tx[1] = (unsigned char)(file.id & 0xFF);

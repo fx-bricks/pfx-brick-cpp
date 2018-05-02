@@ -85,40 +85,40 @@ public:
   
     @param newLength the new size of the file directory
   */
-  void Reallocate (int newLength);
+  void Reallocate(int newLength);
   /**
     Resize the file directory array of PFxFile *files
   
     @param newLength the new size of the file directory
   */
-  void Resize (int newLength);
+  void Resize(int newLength);
   /**
     Insert a new PFxFile entry into the directory
   
     @param withFile a PFxFile entry to insert
     @param atIdx the index where the new entry is inserted
   */
-  void InsertBefore  (PFxFile withFile, int atIdx);
+  void InsertBefore(const PFxFile& withFile, int atIdx);
   /**
     Remove the specified PFxFile entry from the directory
   
     @param atIdx the index of the PFxFile to remove
   */
-  void Remove (int atIdx);
+  void Remove(int atIdx);
   /** 
     A convenient wrapper for InsertBefore to add a new PFxFile
     entry at the beginning of the directory
   
     @param withFile the PFxFile entry to insert
   */
-  void InsertAtBeginning (PFxFile withFile) { InsertBefore (withFile, 0); }
+  void InsertAtBeginning(const PFxFile& withFile) { InsertBefore (withFile, 0); }
   /** 
     A convenient wrapper for InsertBefore to add a new PFxFile
     entry at the end of the directory
 
     @param withFile the PFxFile entry to insert
   */
-  void InsertAtEnd (PFxFile withFile) { InsertBefore (withFile, numFiles); }
+  void InsertAtEnd(const PFxFile& withFile) { InsertBefore (withFile, numFiles); }
   /**
     Prints the contents of this class in human readable form
     using formatted printf statements.
@@ -190,6 +190,6 @@ void fs_copy_file_to(PFxDev& dev, int fid, std::string fn, bool show_progress=tr
   @param fn optional name to override the filename of the host's copy
   @param show_progress a flag to show the progress bar indicator during transfer
 */
-void fs_copy_file_from(PFxDev& dev, PFxFile& file, std::string fn="", bool show_progress=true);
+void fs_copy_file_from(PFxDev& dev, const PFxFile& file, std::string fn="", bool show_progress=true);
 
 #endif
