@@ -1,6 +1,7 @@
 #include <locale>
 #include <sstream>
 #include <string>
+#include <sys/stat.h>
 #include "pfxhelpers.h"
 #include "pfx.h"
 
@@ -280,6 +281,30 @@ std::string evtid_str(int key)
   return s;
 }
 
+void uint32_to_bytes(unsigned long v, unsigned char *bytes)
+{
+  bytes[0] = ((v >> 24) & 0xFF);
+  bytes[1] = ((v >> 16) & 0xFF);
+  bytes[2] = ((v >> 8) & 0xFF);
+  bytes[3] = (v & 0xFF);
+}
+
+unsigned long bytes_to_uint32(unsigned char *bytes)
+{ unsigned long v = 0;
+  v  = (unsigned long)(bytes[0] & 0xFF) << 24;
+  v |= (unsigned long)(bytes[1] & 0xFF) << 16;
+  v |= (unsigned long)(bytes[2] & 0xFF) << 8;
+  v |= (unsigned long)(bytes[3] & 0xFF);
+  return v;
+}
+
+unsigned int bytes_to_uint16(unsigned char *bytes)
+{ unsigned int v = 0;
+  v  = (unsigned int)(bytes[0] & 0xFF) << 8;
+  v |= (unsigned int)(bytes[1] & 0xFF);
+  return v;
+}
+
 std::string uint16_tover(unsigned char msb, unsigned char lsb)
 { std::string s;
   char sc[16];
@@ -333,9 +358,30 @@ void str_to_wchar(const std::string& str, wchar_t *ws)
   std::wstring widestr = std::wstring(str.begin(), str.end());
   const wchar_t* wcstr = widestr.c_str();
   int len = widestr.length();
-  for (int i=0; i<len; i++) *ws++ = *wcstr++;
+  for (int i=0; i<len; i++) { *ws++ = *wcstr++; }
+  *ws = 0;
 }
 
+unsigned long get_file_size(std::string filename)
+{
+  struct stat stat_buf;
+  int rc = stat(filename.c_str(), &stat_buf);
+  return rc == 0 ? (unsigned long)stat_buf.st_size : 0ul;
+}
+
+std::string get_file_basename(std::string filename)
+{
+  const size_t last_slash_idx = filename.find_last_of("\\/");
+  if (std::string::npos != last_slash_idx)
+  { filename.erase(0, last_slash_idx + 1);
+  }
+  // Remove extension if present.
+  const size_t period_idx = filename.rfind('.');
+  if (std::string::npos != period_idx)
+  { filename.erase(period_idx);
+  }
+  return filename;
+}
 
 int ch_to_mask(std::string& s)
 { int mask = 0;

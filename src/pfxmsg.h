@@ -1,11 +1,10 @@
+#include "pfxdev.h"
 
 #ifndef pfxmsg_h
 #define pfxmsg_h
 
 
-class PFxDev;
-
-int usb_transaction(PFxDev& dev, unsigned char *txmsg, unsigned char *rxmsg);
+int usb_transaction(PFxDev& dev);
 
 int cmd_get_icd_rev(PFxDev& dev, bool silent);
 int cmd_get_status(PFxDev& dev);

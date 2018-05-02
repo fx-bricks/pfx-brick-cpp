@@ -230,3 +230,43 @@ void PFxAction::Print()
   printf("Sound Param 1     : [%02X]\n", soundParam1);
   printf("Sound Param 2     : [%02X]\n", soundParam2);
 }
+
+void PFxAction::to_bytes(unsigned char *msg)
+{
+  msg[0] = command;
+  msg[1] = motorActionId;
+  msg[2] = motorParam1;
+  msg[3] = motorParam2;
+  msg[4] = lightFxId;
+  msg[5] = lightOutputMask;
+  msg[6] = lightPFOutputMask;
+  msg[7] = lightParam1;
+  msg[8] = lightParam2;
+  msg[9] = lightParam3;
+  msg[10] = lightParam4;
+  msg[11] = lightParam5;
+  msg[12] = soundFxId;
+  msg[13] = soundFileId;
+  msg[14] = soundParam1;
+  msg[15] = soundParam2;  
+}
+
+void PFxAction::from_bytes(unsigned char *msg)
+{
+  command           = msg[0];
+  motorActionId     = msg[1];
+  motorParam1       = msg[2];
+  motorParam2       = msg[3];
+  lightFxId         = msg[4];
+  lightOutputMask   = msg[5];
+  lightPFOutputMask = msg[6];
+  lightParam1       = msg[7];
+  lightParam2       = msg[8];
+  lightParam3       = msg[9];
+  lightParam4       = msg[10];
+  lightParam5       = msg[11];
+  soundFxId         = msg[12];
+  soundFileId       = msg[13];
+  soundParam1       = msg[14];
+  soundParam2       = msg[15];
+}

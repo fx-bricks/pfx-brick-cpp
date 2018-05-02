@@ -18,6 +18,7 @@ Functions to establish a connected session with a PFx Brick.
 .. hlist:: 
     :columns: 2
     
+    * :cpp:func:`find_bricks`    
     * :cpp:func:`PFxBrick::open`
     * :cpp:func:`PFxBrick::close`
       
@@ -62,4 +63,64 @@ Functions which query and modify the event/action look up table in the PFx Brick
     * :cpp:func:`PFxBrick::set_action`
     * :cpp:func:`PFxBrick::set_action_by_address`
   
+File System
+-----------
+
+Functions which interact with the PFx Brick file system.
+
+.. hlist:: 
+    :columns: 2
+
+    * :cpp:func:`PFxBrick::refresh_file_dir`
+    * :cpp:func:`PFxBrick::put_file`
+    * :cpp:func:`PFxBrick::get_file`
+    * :cpp:func:`PFxBrick::remove_file`
+    * :cpp:func:`PFxBrick::format_fs`
+
+Actions
+-------
+
+Functions which specify and perform common actions.
+
+.. hlist:: 
+    :columns: 2
+
+    * :cpp:func:`PFxBrick::test_action`
+
+Motor Actions
+=============
+
+.. hlist:: 
+    :columns: 2
+
+    * :cpp:func:`PFxAction::set_motor_speed`
+    * :cpp:func:`PFxAction::stop_motor`
+
+Light Actions
+=============
+
+.. hlist:: 
+    :columns: 2
+
+    * :cpp:func:`PFxAction::light_on`
+    * :cpp:func:`PFxAction::light_off`
+    * :cpp:func:`PFxAction::light_toggle`
+    * :cpp:func:`PFxAction::set_brightness`
+    * :cpp:func:`PFxAction::light_fx`
+    * :cpp:func:`PFxAction::combo_light_fx`
+    
+Sound Actions
+=============
+
+.. hlist:: 
+    :columns: 2
+
+    * :cpp:func:`PFxAction::play_audio_file`
+    * :cpp:func:`PFxAction::repeat_audio_file`
+    * :cpp:func:`PFxAction::stop_audio_file`
+    * :cpp:func:`PFxAction::set_volume`
+    * :cpp:func:`PFxAction::sound_fx`
+
+
+    
 

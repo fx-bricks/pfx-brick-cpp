@@ -59,8 +59,44 @@ int cmd_get_name(PFxDev& dev)
 int cmd_set_name(PFxDev& dev, std::string name);
 int cmd_get_event_action(PFxDev& dev, int evtID, int ch);
 int cmd_set_event_action(PFxDev& dev, int evtID, int ch, PFxAction& action);
-int cmd_test_action(PFxDev& dev, PFxAction& action);
-int cmd_get_dir_entry(PFxDev& dev, int idx);
-int cmd_get_num_files(PFxDev& dev);
-int cmd_get_free_space(PFxDev& dev);
-int cmd_set_factory_defaults(PFxDev& dev);
+int cmd_test_action(PFxDev& dev, PFxAction& action)
+{
+  dev.tx[0] = PFX_CMD_TEST_ACTION;
+  action.to_bytes(&dev.tx[1]);
+  return(usb_transaction(dev));
+}
+
+int cmd_get_dir_entry(PFxDev& dev, int idx)
+{
+  dev.tx[0] = PFX_CMD_FILE_DIR;
+  dev.tx[1] = PFX_DIR_REQ_GET_DIR_ENTRY_IDX;
+  dev.tx[2] = (unsigned char)(idx & 0xFF);
+  return(usb_transaction(dev));
+}
+
+int cmd_get_num_files(PFxDev& dev)
+{
+  dev.tx[0] = PFX_CMD_FILE_DIR;
+  dev.tx[1] = PFX_DIR_REQ_GET_FILE_COUNT;
+  return(usb_transaction(dev));
+}
+
+int cmd_get_free_space(PFxDev& dev)
+{
+  dev.tx[0] = PFX_CMD_FILE_DIR;
+  dev.tx[1] = PFX_DIR_REQ_GET_FREE_SPACE;
+  return(usb_transaction(dev));
+}
+
+int cmd_set_factory_defaults(PFxDev& dev)
+{
+  dev.tx[0] = PFX_CMD_SET_FACTORY_DEFAULTS;
+  dev.tx[1] = PFX_RESET_BYTE0;
+  dev.tx[2] = PFX_RESET_BYTE1;
+  dev.tx[3] = PFX_RESET_BYTE2;
+  dev.tx[4] = PFX_RESET_BYTE3;
+  dev.tx[5] = PFX_RESET_BYTE4;
+  dev.tx[6] = PFX_RESET_BYTE5;
+  dev.tx[7] = PFX_RESET_BYTE6;
+  return(usb_transaction(dev));
+}

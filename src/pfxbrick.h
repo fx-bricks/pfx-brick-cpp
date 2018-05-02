@@ -2,6 +2,7 @@
 #include <vector>
 #include <iterator>
 #include "hidapi.h"
+#include "pfxdev.h"
 #include "pfxconfig.h"
 #include "pfxfiles.h"
 #include "pfxhelpers.h"
@@ -12,20 +13,6 @@
 #define pfxbrick_h
 
 #define EP_BUFF_LEN 64
-
-
-class PFxDev
-{
-public:
-  PFxDev();
-  ~PFxDev();
-  PFxDev (const PFxDev& withDev);
-  PFxDev& operator=(const PFxDev& withDev);
-
-  hid_device *hdev;
-  unsigned char *tx;
-  unsigned char *rx;
-};
 
 /**
   @brief PFx Brick top level class
@@ -64,108 +51,106 @@ public:
   */
   bool open(void) { return(open("")); }
 
-/**
-    @brief Closes a session with a PFx Brick
+  /**
+      @brief Closes a session with a PFx Brick
 
-    Closes a USB communication session with a PFx Brick.
-*/
+      Closes a USB communication session with a PFx Brick.
+  */
   void close();
 
-/**
-    @brief Gets the revision number of ICD the PFx Brick supports
+  /**
+      @brief Gets the revision number of ICD the PFx Brick supports
 
-    Requests the version of Interface Control Document (ICD)
-    the connected PFx Brick supports using the PFX_CMD_GET_ICD_REV
-    ICD message.  The resulting version number is stored in
-    this class and also returned.
+      Requests the version of Interface Control Document (ICD)
+      the connected PFx Brick supports using the PFX_CMD_GET_ICD_REV
+      ICD message.  The resulting version number is stored in
+      this class and also returned.
   
-    @param silent flag to optionally silence the status LED blink
-*/
-  void get_icd_rev() { return get_icd_rev(false); }
-  void get_icd_rev(bool silent);
+      @param silent flag to optionally silence the status LED blink
+  */
+  void get_icd_rev(bool silent=false);
 
-/**
-    @brief Gets identity and status info from the PFx Brick
+  /**
+      @brief Gets identity and status info from the PFx Brick
 
-    Requests the top level operational status of the PFx Brick
-    using the PFX_CMD_GET_STATUS ICD message.  The resulting
-    status data is stored in this class and can be queried
-    with typical class member access methods or the print_status method.
-*/
+      Requests the top level operational status of the PFx Brick
+      using the PFX_CMD_GET_STATUS ICD message.  The resulting
+      status data is stored in this class and can be queried
+      with typical class member access methods or the print_status method.
+  */
   void get_status();
 
-/**
-    @brief Prints the status info retrieved by get_status
+  /**
+      @brief Prints the status info retrieved by get_status
 
-    Prints the top level operational status information retrieved
-    by a previous call to the get_status method.
-*/  
+      Prints the top level operational status information retrieved
+      by a previous call to the get_status method.
+  */  
   void print_status();
 
-/**
-    @brief Gets PFx Brick configuration
+  /**
+      @brief Gets PFx Brick configuration
 
-    Retrieves configuration settings from the PFx Brick using 
-    the PFX_CMD_GET_CONFIG ICD message. The configuration data
-    is stored in the \a PFxBrick.config class member variable.
-*/
+      Retrieves configuration settings from the PFx Brick using 
+      the PFX_CMD_GET_CONFIG ICD message. The configuration data
+      is stored in the \a PFxBrick.config class member variable.
+  */
   void get_config();
 
-/**
-    @brief Prints the configuration retrieved by get_config
+  /**
+      @brief Prints the configuration retrieved by get_config
 
-    Prints a summary representation of the PFx Brick configuration
-    settings which were retrieved by a previous call to get_config.
-*/
+      Prints a summary representation of the PFx Brick configuration
+      settings which were retrieved by a previous call to get_config.
+  */
   void print_config();
 
-/**
-    @brief Writes new configuration to the PFx Brick
+  /**
+      @brief Writes new configuration to the PFx Brick
   
-    Writes the contents of the PFxConfig data structure class to
-    the PFx Brick using the PFX_CMD_SET_CONFIG ICD message.
+      Writes the contents of the PFxConfig data structure class to
+      the PFx Brick using the PFX_CMD_SET_CONFIG ICD message.
     
-    It is recommended that the configuration be read from the
-    PFx Brick (using get_config) before any changes are made to
-    the configuration and written back. This ensures that any
-    configuration settings which are not desired to be changed
-    are left in the same state.
-*/  
-
+      It is recommended that the configuration be read from the
+      PFx Brick (using get_config) before any changes are made to
+      the configuration and written back. This ensures that any
+      configuration settings which are not desired to be changed
+      are left in the same state.
+  */  
   void set_config();
-/**
-    @brief Gets the user defined name of the PFx Brick
 
-    Retrieves the user defined name of the PFx Brick using 
-    the PFX_CMD_GET_NAME ICD message. The name is stored in
-    the name class variable as a UTF-8 string.
+  /**
+      @brief Gets the user defined name of the PFx Brick
+
+      Retrieves the user defined name of the PFx Brick using 
+      the PFX_CMD_GET_NAME ICD message. The name is stored in
+      the name class variable as a UTF-8 string.
     
-    @returns a string with the user defined name
-*/
-
+      @returns a string with the user defined name
+  */
   void get_name();
-/**
-    @brief Sets a new user define PFx Brick name
 
-    Sets the user defined name of the PFx Brick using the
-    PFX_CMD_SET_NAME ICD message.
+  /**
+      @brief Sets a new user define PFx Brick name
+
+      Sets the user defined name of the PFx Brick using the
+      PFX_CMD_SET_NAME ICD message.
   
-    @param name new name to set (up to 24 character bytes, UTF-8)
-*/
-
+      @param name new name to set (up to 24 character bytes, UTF-8)
+  */
   void set_name();
 
-/**
-    @brief Gets an action data structure by address
+  /**
+      @brief Gets an action data structure by address
   
-    Retrieves a stored action indexed by address rather than a
-    combination of eventID and IR channel.  The address is converted into a 
-    [eventID, IR channel] pair and the get_action method is 
-    called with this function as a convenient wrapper.
+      Retrieves a stored action indexed by address rather than a
+      combination of eventID and IR channel.  The address is converted into a 
+      [eventID, IR channel] pair and the get_action method is 
+      called with this function as a convenient wrapper.
     
-    @param address event/action LUT address (0 - 0x7F)
-    @returns PFxAction class filled with retrieved LUT data
-*/  
+      @param address event/action LUT address (0 - 0x7F)
+      @returns PFxAction class filled with retrieved LUT data
+  */  
   PFxAction& get_action_by_address(int address);
 
   /**
@@ -245,8 +230,7 @@ public:
     @param fn the filename (optionally including the path) of the file to copy
     @param show_progress a flag to show the progress bar indicator during transfer.
   */
-  void put_file(int fileID, char *fn) { put_file(fileID, fn, true); }
-  void put_file(int fileID, char *fn, bool show_progress);
+  void put_file(int fileID, char *fn, bool show_progress=true);
 
   /**
     @brief Copies a file from the PFx Brick
@@ -257,8 +241,7 @@ public:
     @param fn optional override for the filename when copied into the host 
     @param show_progress a flag to show the progress bar indicator during transfer.
   */
-  void get_file(int fileID, char *fn, bool show_progress);
-  void get_file(int fileID, char *fn) { get_file(fileID, fn, true); }
+  void get_file(int fileID, char *fn, bool show_progress=true);
 
   /**
     @brief Deletes a file on the PFx Brick file system
@@ -276,8 +259,7 @@ public:
     
     @param quick If True, only occupied sectors are erased. If False, every sector is erased, i.e. a complete format.
   */
-  void format_fs(bool quick);
-  void format_fs() { format_fs(false); }  
+  void format_fs(bool quick=false);
   
   /**
     @brief Reset PFx Brick to factory default configuration
@@ -289,6 +271,10 @@ public:
   /* Variables */
   /** a child class to hold the device handle and data buffers */
   PFxDev dev;
+  /** child class to store configuration and settings */
+  PFxConfig config;
+  /** child class to store the file system directory */
+  PFxDir filedir;
   /** product ID code reported by the PFx Brick (e.g. 'A204') */
   std::string product_id;
   /** serial number reported by the PFx Brick, usually 8 digit hexadecimal */
@@ -321,10 +307,18 @@ public:
   bool is_open;
   /** user defined name of the PFx Brick */
   std::string name;
-  /** child class to store configuration and settings */
-  PFxConfig config;
-  /** child class to store the file system directory */
-  PFxDir filedir;
 };
+
+/**
+  @brief Enumerates all attached PFx Bricks 
+
+  This function finds all PFx Bricks attached to the current host's
+  USB subsystem.  Since all PFx Bricks have unique serial number,
+  this function returns a vector string array of the serial numbers
+  of discovered PFx Bricks.
+
+  @param show_list optionally specifies that a listing of found PFx Bricks be printed to the console
+*/
+std::vector<std::string> find_bricks(bool show_list=false);
 
 #endif
