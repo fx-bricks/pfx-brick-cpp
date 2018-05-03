@@ -56,7 +56,20 @@ int cmd_get_name(PFxDev& dev)
   return(usb_transaction(dev));
 }
   
-int cmd_set_name(PFxDev& dev, std::string name);
+int cmd_set_name(PFxDev& dev, std::string name)
+{
+  dev.tx[0] = PFX_CMD_SET_NAME;
+  nlen = name.length();
+  if (nlen > 24) nlen = 24;
+  if (nlen > 0)
+  {
+    for (int i=0;  i<nlen; i++) dev.tx[1 + i] = name[i];
+    for (int i=nlen; i<24; i++) dev.tx[1 + i] = 0;    
+    return(usb_transaction(dev));
+  }
+  return 0;  
+}
+
 int cmd_get_event_action(PFxDev& dev, int evtID, int ch);
 int cmd_set_event_action(PFxDev& dev, int evtID, int ch, PFxAction& action);
 int cmd_test_action(PFxDev& dev, PFxAction& action)

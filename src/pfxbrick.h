@@ -138,7 +138,7 @@ public:
   
       @param name new name to set (up to 24 character bytes, UTF-8)
   */
-  void set_name();
+  void set_name(std::string name);
 
   /**
       @brief Gets an action data structure by address

@@ -207,10 +207,56 @@ void PFxBrick::get_config()
   if (res) config.from_bytes(&dev.rx[0]);
 }
 
-
 void PFxBrick::print_config()
 {
   config.Print();
+}
+
+void PFxBrick::set_config()
+{ if (!is_open) return;
+  int res = 0;
+  unsigned char msg[64];
+  config.to_bytes(&msg[0]);
+  res = cmd_set_config(dev, &msg[0]);
+}
+
+void PFxBrick::get_name()
+{ if (!is_open) return;
+  int res = cmd_get_name(dev);
+  if (res)
+  { for (int i=0; i<PFX_NAME_MAX; i++) name[i] = dev.rx[1+i];
+  }
+}
+
+void PFxBrick::set_name(std::string name)
+{ if (!is_open) return;
+  int res = cmd_set_name(dev, name);
+}
+
+PFxAction& PFxBrick::get_action_by_address(int address)
+{ if (!is_open) return;
+  if (address > EVT_LUT_MAX)
+  { printf("Requested action at address %02X is out of range\n", address);
+    return NULL;
+  }
+  int evt = 0;
+  int ch = 0;
+  address_to_evtch(address, &evt, &ch);
+  return (get_action(evt, ch));
+}
+
+PFxAction& get_action(int evtID, int ch)
+{ if (!is_open) return;
+  if ((ch > 3) || (evtID > EVT_ID_MAX))
+  { printf("Requested action (id=%02X, ch=%02X) is out of range\n", evtID, ch)
+    return NULL;
+  }
+  int res = cmd_get_event_action(dev, evtID, ch);
+  if (res)
+  { action = PFxAction();
+    action.from_bytes() 
+      
+  }  
 }
 
 void PFxBrick::refresh_file_dir()

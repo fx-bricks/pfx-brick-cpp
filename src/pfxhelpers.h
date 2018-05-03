@@ -37,5 +37,6 @@ bool is_in_list(std::string& s, std::vector<std::string>& slist);
 int ch_to_mask(std::string& s);
 int duration_to_fixed_value(double duration);
 std::string mask_to_ch(int mask);
+void address_to_evtch(int address, int *evt, int *ch);
 
 #endif

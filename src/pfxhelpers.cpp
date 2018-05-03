@@ -433,3 +433,9 @@ int duration_to_fixed_value(double duration)
   else if (duration < 300.0) return EVT_SOUND_DUR_2M;
   return EVT_SOUND_DUR_5M;
 }
+
+void address_to_evtch(int address, int *evt, int *ch)
+{
+  *evt = (address >> 2) & 0xFF;
+  *ch = address & EVT_EVENT_CH_MASK;
+}
