@@ -24,7 +24,18 @@
 #include <locale>
 #include <sstream>
 #include <string>
+#include <stdlib.h>
 #include <sys/stat.h>
+#if defined(__APPLE__) || defined(__linux__)
+  #include <sys/ioctl.h>
+  #include <sys/time.h>
+  #include <termios.h>
+  #include <unistd.h>
+#else
+  #include <conio.h>
+  #include <Windows.h>
+#endif
+
 #include "pfxhelpers.h"
 #include "pfx.h"
 
@@ -462,3 +473,87 @@ void address_to_evtch(int address, int *evt, int *ch)
   *evt = (address >> 2) & 0xFF;
   *ch = address & EVT_EVENT_CH_MASK;
 }
+
+static int xPrev = 0;
+static int yPrev = 0;
+static int xmody = 0;
+static int xmodyPrev = 0;
+static uint64_t tNow = 0;
+static uint64_t tPrev = 0;
+static uint64_t tDiff = 0;
+static uint64_t tStart = 0;
+static uint64_t tStop = 0;
+static uint64_t tTotal = 0;
+
+#if defined( OS_WINDOWS )
+int gettimeofday( struct timeval * tp, struct timezone * tzp )
+{
+	// Note: some broken versions only have 8 trailing zero's, the correct epoch has 9 trailing zero's
+	// This magic number is the number of 100 nanosecond intervals since January 1, 1601 (UTC)
+	// until 00:00:00 January 1, 1970 
+	static const uint64_t EPOCH = ( (uint64_t)116444736000000000ULL );
+
+	SYSTEMTIME  system_time;
+	FILETIME    file_time;
+	uint64_t    time;
+
+	GetSystemTime( &system_time );
+	SystemTimeToFileTime( &system_time, &file_time );
+	time = ( (uint64_t)file_time.dwLowDateTime );
+	time += ( (uint64_t)file_time.dwHighDateTime ) << 32;
+
+	tp->tv_sec = (long)( ( time - EPOCH ) / 10000000L );
+	tp->tv_usec = (long)( system_time.wMilliseconds * 1000 );
+	return 0;
+}
+#endif
+
+uint64_t GetTimeStamp() {
+    struct timeval tv;
+    gettimeofday(&tv,NULL);
+    return tv.tv_sec*(uint64_t)1000000+tv.tv_usec;
+}
+
+void print_progress (int x, int y)
+{ double pctComplete, rate;
+  int nIntervals, i;
+  
+  nIntervals = y / 50;
+  xmody = (x % nIntervals);
+  tPrev = tNow;
+  
+  if (nIntervals > 0)
+  {
+    if (xmody < xmodyPrev)
+    {
+      pctComplete = (double)x / (double)y * 50.0;
+      printf ("\r[");
+      for (i=0; i<50; i++)
+      { if ((int)(pctComplete) >= i) printf (".");
+        else printf (" ");
+      }
+      printf ("] %.0lf %%", pctComplete*2.0);
+      
+      if (y == yPrev)
+      { tNow = GetTimeStamp();
+        tDiff = tNow - tPrev;
+        if (tDiff > 0)
+        { rate = ((double)x - (double)xPrev) / ((double)tDiff) * 1e6;
+          if (rate < 1e3) printf (" %.0lf B/s", rate);
+          else printf (" %.2lf kB/s", rate/1e3);
+        }
+        xPrev = x;
+      }
+      if (pctComplete <= 2) tStart = GetTimeStamp();
+      if (pctComplete >= 49.5)
+      { tStop = GetTimeStamp();
+        tTotal = tStop - tStart;
+        printf (" %.2lf sec (%.2lf kB/s)\n", (double)tTotal * 1e-6, (double)y/(double)tTotal * 1e3);
+      }
+      fflush(stdout);
+    }
+    xmodyPrev = xmody;
+    yPrev = y;
+  }
+}
+

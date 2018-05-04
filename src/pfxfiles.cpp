@@ -285,6 +285,7 @@ void fs_copy_file_to(PFxDev& dev, int fid, std::string fn, bool show_progress)
             res = usb_transaction(dev);
             err = fs_error_check(dev.rx[1]);
           }
+          if (show_progress) print_progress ((int)nCount, (int)nBytes);
         }
         fclose(fp);
         dev.tx[0] = PFX_CMD_FILE_CLOSE;
@@ -322,10 +323,10 @@ void fs_copy_file_from(PFxDev& dev, const PFxFile& file, std::string fn, bool sh
         res = usb_transaction(dev);
         err = fs_error_check(dev.rx[1]);
         if (!err)
-        { 
-          nCount += dev.rx[1];
+        { nCount += dev.rx[1];
           fwrite(&dev.rx[2], 1, dev.rx[1], fp);
         }
+        if (show_progress) print_progress ((int)nCount, (int)file.size);
       }
       fclose(fp);
       dev.tx[0] = PFX_CMD_FILE_CLOSE;

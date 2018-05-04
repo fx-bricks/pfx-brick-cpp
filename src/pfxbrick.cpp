@@ -321,11 +321,11 @@ void PFxBrick::refresh_file_dir()
   if (res)
   { filedir.Clear();
     int file_count = bytes_to_uint16(&dev.rx[3]);
-    for (int i=0; i<file_count; i++)
+    for (int i=0; i<64; i++)
     { res = cmd_get_dir_entry(dev, i+1);
       PFxFile d = PFxFile();
       d.from_bytes(&dev.rx[0]);
-      filedir.InsertAtEnd(d);
+      if (d.id < 0xFF) filedir.InsertAtEnd(d);
     }
   }
 }
