@@ -91,6 +91,8 @@ PFxBrick::~PFxBrick()
 PFxBrick::PFxBrick (const PFxBrick& withBrick)
 {
   dev = withBrick.dev;
+  config = withBrick.config;
+  filedir = withBrick.filedir;
   product_id = withBrick.product_id;
   serial_no = withBrick.serial_no;
   product_desc = withBrick.product_desc;
@@ -106,12 +108,15 @@ PFxBrick::PFxBrick (const PFxBrick& withBrick)
   usb_serno_str = withBrick.usb_serno_str;
   is_open = withBrick.is_open;
   name = withBrick.name;
+  
 }
 
 PFxBrick& PFxBrick::operator=(const PFxBrick& withBrick)
 {
   if (this == &withBrick) return *this;
   dev = withBrick.dev;
+  config = withBrick.config;
+  filedir = withBrick.filedir;
   product_id = withBrick.product_id;
   serial_no = withBrick.serial_no;
   product_desc = withBrick.product_desc;
