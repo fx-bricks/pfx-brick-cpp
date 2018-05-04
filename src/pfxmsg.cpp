@@ -1,3 +1,26 @@
+/*
+  Copyright (C) 2018  Fx Bricks Inc.
+  This file is part of the pfxbrick python module.
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include "pfxbrick.h"
 
 int usb_transaction(PFxDev& dev)
@@ -59,7 +82,7 @@ int cmd_get_name(PFxDev& dev)
 int cmd_set_name(PFxDev& dev, std::string name)
 {
   dev.tx[0] = PFX_CMD_SET_NAME;
-  nlen = name.length();
+  int nlen = name.length();
   if (nlen > 24) nlen = 24;
   if (nlen > 0)
   {
@@ -70,9 +93,24 @@ int cmd_set_name(PFxDev& dev, std::string name)
   return 0;  
 }
 
-int cmd_get_event_action(PFxDev& dev, int evtID, int ch);
-int cmd_set_event_action(PFxDev& dev, int evtID, int ch, PFxAction& action);
-int cmd_test_action(PFxDev& dev, PFxAction& action)
+int cmd_get_event_action(PFxDev& dev, int evtID, int ch)
+{
+  dev.tx[0] = PFX_CMD_GET_EVENT_ACTION;
+  dev.tx[1] = evtID;
+  dev.tx[2] = ch;
+  return(usb_transaction(dev));
+}
+
+int cmd_set_event_action(PFxDev& dev, int evtID, int ch, const PFxAction& action)
+{
+  dev.tx[0] = PFX_CMD_SET_EVENT_ACTION;
+  dev.tx[1] = evtID;
+  dev.tx[2] = ch;
+  action.to_bytes(&dev.tx[3]);
+  return(usb_transaction(dev));
+}
+
+int cmd_test_action(PFxDev& dev, const PFxAction& action)
 {
   dev.tx[0] = PFX_CMD_TEST_ACTION;
   action.to_bytes(&dev.tx[1]);

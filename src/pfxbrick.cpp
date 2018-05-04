@@ -1,5 +1,27 @@
-#include "pfxbrick.h"
+/*
+  Copyright (C) 2018  Fx Bricks Inc.
+  This file is part of the pfxbrick python module.
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
 
+#include "pfxbrick.h"
 
 std::vector<std::string> find_bricks(bool show_list)
 {
@@ -233,32 +255,59 @@ void PFxBrick::set_name(std::string name)
   int res = cmd_set_name(dev, name);
 }
 
-PFxAction& PFxBrick::get_action_by_address(int address)
-{ if (!is_open) return;
+PFxAction& PFxBrick::get_action_by_address(int address, PFxAction& action)
+{ if (!is_open) return action;
   if (address > EVT_LUT_MAX)
   { printf("Requested action at address %02X is out of range\n", address);
-    return NULL;
+    return action;
   }
   int evt = 0;
   int ch = 0;
   address_to_evtch(address, &evt, &ch);
-  return (get_action(evt, ch));
+  return (get_action(evt, ch, action));
 }
 
-PFxAction& get_action(int evtID, int ch)
+PFxAction& PFxBrick::get_action(int evtID, int ch, PFxAction& action)
+{ if (!is_open) return action;
+  if ((ch > 3) || (evtID > EVT_ID_MAX))
+  { printf("Requested action (id=%02X, ch=%02X) is out of range\n", evtID, ch);
+  }
+  else
+  { int res = cmd_get_event_action(dev, evtID, ch);
+    if (res)
+    { action = PFxAction();
+      action.from_bytes(&dev.rx[1]); 
+    }
+  }  
+  return action;
+}
+
+void PFxBrick::set_action_by_address(int address, const PFxAction& action)
+{ if (!is_open) return;
+  if (address > EVT_LUT_MAX)
+  { printf("Requested action at address %02X is out of range\n", address);
+    return;
+  }
+  int evt = 0;
+  int ch = 0;
+  address_to_evtch(address, &evt, &ch);
+  set_action(evt, ch, action);
+}
+
+void PFxBrick::set_action(int evtID, int ch, const PFxAction& action)
 { if (!is_open) return;
   if ((ch > 3) || (evtID > EVT_ID_MAX))
-  { printf("Requested action (id=%02X, ch=%02X) is out of range\n", evtID, ch)
-    return NULL;
+  { printf("Requested action (id=%02X, ch=%02X) is out of range\n", evtID, ch);
+    return;
   }
-  int res = cmd_get_event_action(dev, evtID, ch);
-  if (res)
-  { action = PFxAction();
-    action.from_bytes() 
-      
-  }  
+  int res = cmd_set_event_action(dev, evtID, ch, action);
 }
 
+void PFxBrick::test_action(const PFxAction& action)
+{
+  cmd_test_action(dev, action);
+}
+      
 void PFxBrick::refresh_file_dir()
 { if (!is_open) return;
   int res = 0;
@@ -280,4 +329,32 @@ void PFxBrick::refresh_file_dir()
     }
   }
 }
+
+void PFxBrick::put_file(int fileID, std::string fn, bool show_progress)
+{
+  fs_copy_file_to(dev, fileID, fn, show_progress);
+}
+
+void PFxBrick::get_file(int fileID, std::string fn, bool show_progress)
+{
+  refresh_file_dir();
+  PFxFile *f = filedir.get_file_dir_entry(fileID);
+  fs_copy_file_from(dev, *f, fn, show_progress);
+}
+
+void PFxBrick::remove_file(int fileID)
+{
+  fs_remove_file(dev, fileID);
+}
+
+void PFxBrick::format_fs(bool quick)
+{
+  fs_format(dev, quick);
+}
+
+void PFxBrick::reset_factory_config()
+{
+  cmd_set_factory_defaults(dev);
+}
+
 

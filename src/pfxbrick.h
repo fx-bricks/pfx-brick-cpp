@@ -1,3 +1,26 @@
+/*
+  Copyright (C) 2018  Fx Bricks Inc.
+  This file is part of the pfxbrick python module.
+  Permission is hereby granted, free of charge, to any person
+  obtaining a copy of this software and associated documentation
+  files (the "Software"), to deal in the Software without restriction,
+  including without limitation the rights to use, copy, modify, merge,
+  publish, distribute, sublicense, and/or sell copies of the Software,
+  and to permit persons to whom the Software is furnished to do so,
+  subject to the following conditions:
+  
+  The above copyright notice and this permission notice shall be
+  included in all copies or substantial portions of the Software.
+  
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+  EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+  OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+  CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+  TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
 #include <string>
 #include <vector>
 #include <iterator>
@@ -151,7 +174,7 @@ public:
       @param address event/action LUT address (0 - 0x7F)
       @returns PFxAction class filled with retrieved LUT data
   */  
-  PFxAction& get_action_by_address(int address);
+  PFxAction& get_action_by_address(int address, PFxAction& action);
 
   /**
     @brief Gets an action data structure by event ID
@@ -168,7 +191,7 @@ public:
     @param channel channel index LUT address component (0 - 3)
     @returns PFxAction class filled with retrieved LUT data
   */
-  PFxAction& get_action(int evtID, int ch);
+  PFxAction& get_action(int evtID, int ch, PFxAction& action);
 
   /**
     @brief Sets an a new action in the event/action LUT by address
@@ -230,7 +253,7 @@ public:
     @param fn the filename (optionally including the path) of the file to copy
     @param show_progress a flag to show the progress bar indicator during transfer.
   */
-  void put_file(int fileID, char *fn, bool show_progress=true);
+  void put_file(int fileID, std::string fn, bool show_progress=true);
 
   /**
     @brief Copies a file from the PFx Brick
@@ -241,7 +264,7 @@ public:
     @param fn optional override for the filename when copied into the host 
     @param show_progress a flag to show the progress bar indicator during transfer.
   */
-  void get_file(int fileID, char *fn, bool show_progress=true);
+  void get_file(int fileID, std::string fn, bool show_progress=true);
 
   /**
     @brief Deletes a file on the PFx Brick file system
