@@ -12,7 +12,9 @@ int main (int argc, char *argv[])
   if (brick.open())
   {
     brick.get_icd_rev();
-    printf("ICD rev : %s\n", brick.icd_rev.c_str());
+    printf("ICD rev               : %s\n", brick.icd_rev.c_str());
+    brick.get_name();
+    printf("Brick name            : %s\n", brick.name.c_str());
     brick.get_status();
     brick.print_status();
     brick.get_config();
