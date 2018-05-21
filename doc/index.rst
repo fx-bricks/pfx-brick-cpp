@@ -2,7 +2,7 @@
 PFx Brick C++ API
 =================
 
-The **pfxbrick** python package provides an easy to use API for communicating with USB attached PFx Bricks. The API provides the following capabilities:
+The **pfxbrick** C++ API provides an easy to use library for communicating with USB attached PFx Bricks. The API provides the following capabilities:
 
 * Enumeration of PFx Bricks, session open/close with specific PFx Brick
 
@@ -19,7 +19,7 @@ Details on the PFx Brick and its communication protocol can be found in the `PFx
 Links
 -----
 
-* `pfxbrick package GitHub page <https://github.com/fx-bricks/pfx-brick-py>`_
+* `pfxbrick C++ API GitHub page <https://github.com/fx-bricks/pfx-brick-cpp>`_
 
 * `Fx Bricks GitHub page <https://github.com/fx-bricks>`_
 
@@ -36,6 +36,7 @@ Table Of Contents
     
     apireference.rst
     classreference.rst
+    examples.rst
 
 Indices and Tables
 ------------------
