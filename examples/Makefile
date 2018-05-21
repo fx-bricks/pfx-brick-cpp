@@ -5,31 +5,34 @@ OS = MACOSX
 
 PROG = pfxtest
 INCDIR = ../src/
+INCHID = ../hidapi/hidapi
 
 ifeq ($(OS), LINUX)
+HIDAPI = ../hidapi/linux/
 TARGET = $(PROG)
 CC = gcc
 STRIP = strip
-CFLAGS = -Wall -O2 -DOS_$(OS) -I$(INCDIR)
+CFLAGS = -Wall -O2 -DOS_$(OS) -I$(INCDIR) -I$(INCHID)
 LIBS = -lusb
 else ifeq ($(OS), MACOSX)
-#TARGET = $(PROG).dmg
 TARGET = $(PROG)
+HIDAPI = ../hidapi/mac/
 SDK = /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk
 ARCH = -mmacosx-version-min=10.13 -arch x86_64
 CC = clang
 STRIP = strip
-CFLAGS = -Wall -O2 -DOS_$(OS) -isysroot $(SDK) $(ARCH) -I$(INCDIR) -v
+CFLAGS = -Wall -O2 -DOS_$(OS) -isysroot $(SDK) $(ARCH) -I$(INCDIR) -I$(INCHID) -v
 LIBS = $(ARCH) -Wl,-syslibroot,$(SDK) -framework IOKit -framework CoreFoundation -lc++
 else ifeq ($(OS), WINDOWS)
+HIDAPI = ../hidapi/windows/
 TARGET = $(PROG).exe
 CC = i586-mingw32msvc-gcc
 STRIP = i586-mingw32msvc-strip
-CFLAGS = -Wall -O2 -DOS_$(OS) -I$(INCDIR)
+CFLAGS = -Wall -O2 -DOS_$(OS) -I$(INCDIR) -I$(INCHID)
 LIBS = -lhid -lsetupapi
 endif
 
-OBJS = $(INCDIR)hid.o $(INCDIR)pfxbrick.o $(INCDIR)pfxconfig.o $(INCDIR)pfxhelpers.o $(INCDIR)pfxmsg.o $(INCDIR)pfxaction.o $(INCDIR)pfxfiles.o $(INCDIR)pfxdev.o
+OBJS = $(HIDAPI)hid.o $(INCDIR)pfxbrick.o $(INCDIR)pfxconfig.o $(INCDIR)pfxhelpers.o $(INCDIR)pfxmsg.o $(INCDIR)pfxaction.o $(INCDIR)pfxfiles.o $(INCDIR)pfxdev.o
 
 all: getinfo filedir lightfx changecfg eventlut filecopyto filecopyfrom fileremove
 
@@ -87,10 +90,11 @@ pfxfiles.o: $(INCDIR)pfxfiles.cpp $(INCDIR)pfxbrick.h
 pfxdev.o: $(INCDIR)pfxdev.cpp $(INCDIR)pfxbrick.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-hid.o: $(INCDIR)hid.c $(INCDIR)hidapi.h
+hid.o: $(HIDAPI)hid.c $(HIDAPI)../hidapi/hidapi.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 
 clean:
-	rm -f *.o getinfo filedir
+	rm -f *.o getinfo filedir filecopyto fileremove filecopyfrom eventlut changecfg lightfx
 	rm -f $(INCDIR)*.o
+	rm -f $(HIDAPI)*.o

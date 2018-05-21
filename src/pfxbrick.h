@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 #include <iterator>
-#include "hidapi.h"
+#include "../hidapi/hidapi/hidapi.h"
 #include "pfxdev.h"
 #include "pfxconfig.h"
 #include "pfxfiles.h"

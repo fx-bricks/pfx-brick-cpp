@@ -21,7 +21,7 @@
   SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-#include "hidapi.h"
+#include "../hidapi/hidapi/hidapi.h"
 
 #ifndef pfxdev_h
 #define pfxdev_h
