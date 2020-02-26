@@ -51,7 +51,7 @@ An example of the API can be seen below
 Documentation
 =============
 
-* `PFx Brick Interface Control Document (ICD) v.3.36 <https://github.com/fx-bricks/pfx-brick-dev/raw/master/doc/ICD/PFxBrickICD-Rev3.36.pdf>`_ describes details of PFx Brick operation and communication protocol
+* `PFx Brick Interface Control Document (ICD) v.3.37 <https://github.com/fx-bricks/pfx-brick-dev/raw/master/doc/ICD/PFxBrickICD-Rev3.37.pdf>`_ describes details of PFx Brick operation and communication protocol
 * `C++ API Reference Documentation <https://www.fxbricks.com/docs/cpp/index.html>`_ 
 
 
